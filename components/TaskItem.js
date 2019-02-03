@@ -1,13 +1,17 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import moment from 'moment';
 import { numDaysBetween } from '../utils/dateUtils';
 import { Avatar, Card, ListItem, withTheme } from 'react-native-material-ui'
+import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 // import Container from '../components/Container'
 
 export default class TaskItem extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+    };
   }
 
   _formatDate(date) {
@@ -23,12 +27,19 @@ export default class TaskItem extends React.Component {
     return null;
   }
 
+  onSwipeLeft(gestureState) {
+    const {
+      id,
+    } = this.props;
+    console.log(id);
+  }
+
   render() {
     const {
       imgUri,
       title,
       content,
-      alertAt
+      alertAt,
     } = this.props;
 
     var img = <Image style={styles.thumbnail}
@@ -39,19 +50,32 @@ export default class TaskItem extends React.Component {
     var timer = <Text style={styles.timer}>{this._formatDate(alertAt)}</Text>;
 
     return (
-      <Card onPress={_ => console.log(this.props)}>
-        <ListItem
-          divider
-          leftElement={avatar}
-          centerElement={{
-              primaryText: title,
-              secondaryText: content,
-          }}
-          rightElement={timer}
-        />
-      </Card>
+      <GestureRecognizer
+      //onSwipe={(direction, state) => this.onSwipe(direction, state)}>
+        onSwipeLeft={this.onSwipeLeft.bind(this)}>
+        <Card>
+          <ListItem
+            divider
+            leftElement={avatar}
+            centerElement={{
+                primaryText: title,
+                secondaryText: content,
+            }}
+            rightElement={timer}
+            onPress={_ => console.log(this.props)}
+          />
+        </Card>
+      </GestureRecognizer>
     )
   }
+}
+
+TaskItem.propTypes = {
+  id: PropTypes.number.isRequired,
+  imgUri: PropTypes.string,
+  title: PropTypes.string.isRequired,
+  content: PropTypes.string,
+  alertAt: PropTypes.instanceOf(Date),
 }
 
 const styles = StyleSheet.create({

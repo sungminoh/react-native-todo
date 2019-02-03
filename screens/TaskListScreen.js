@@ -21,20 +21,44 @@ export default class TaskListScreen extends React.Component {
   //   };
   // };
 
+  //onSwipe(gestureName, gestureState) {
+    //const {SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
+    //console.log(gestureName, gestureState)
+    //this.setState({gestureName: gestureName});
+    //switch (gestureName) {
+      //case SWIPE_UP:
+        //this.setState({backgroundColor: 'red'});
+        //break;
+      //case SWIPE_DOWN:
+        //this.setState({backgroundColor: 'green'});
+        //break;
+      //case SWIPE_LEFT:
+        //this.setState({backgroundColor: 'blue'});
+        //break;
+      //case SWIPE_RIGHT:
+        //this.setState({backgroundColor: 'yellow'});
+        //break;
+    //}
+  //}
+
+  //onSwipeLeftCard(gestureState) {
+    //console.log(gestureState);
+  //}
+
   render() {
     // TODO
     let tasks = [
       {title: 'section1', data: [
-        {imgUri: 'imguri', title: 'title', content: 'content', alertAt: new Date()},
-        {title: 'title2', content: 'content2', alertAt: new Date()},
-        {imgUri: 'imguri', title: 'title', content: 'content'},
-        {imgUri: 'imguri', title: 'title', content: 'content'},
+        {id: 1, imgUri: 'imguri', title: 'title', content: 'content', alertAt: new Date()},
+        {id: 2, title: 'title2', content: 'content2', alertAt: new Date()},
+        {id: 3, imgUri: 'imguri', title: 'title', content: 'content'},
+        {id: 4, imgUri: 'imguri', title: 'title', content: 'content'},
       ]},
       {title: 'section2', data: [
-        {imgUri: 'imguri', title: 'title', content: 'content', alertAt: new Date()},
-        {title: 'title2', content: 'content2', alertAt: new Date()},
-        {imgUri: 'imguri', title: 'title', content: 'content'},
-        {imgUri: 'imguri', title: 'title', content: 'content'},
+        {id: 5, imgUri: 'imguri', title: 'title', content: 'content', alertAt: new Date()},
+        {id: 6, title: 'title2', content: 'content2', alertAt: new Date()},
+        {id: 7, imgUri: 'imguri', title: 'title', content: 'content'},
+        {id: 8, imgUri: 'imguri', title: 'title', content: 'content'},
       ]}
     ];
 
@@ -42,13 +66,14 @@ export default class TaskListScreen extends React.Component {
       <Container>
         <SectionList
           renderItem={
-            ({item: {imgUri, title, content, alertAt},
-              index,
-              section}) => <TaskItem key={index}
+            ({item: {id, imgUri, title, content, alertAt}, index, section}) => (
+              <TaskItem key={id} id={id}
                 imgUri={imgUri}
                 title={title}
                 content={content}
-                alertAt={alertAt}/>
+                alertAt={alertAt}
+              />
+            )
           }
           renderSectionHeader={({section: {title}}) => (
             <Subheader
