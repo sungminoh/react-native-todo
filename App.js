@@ -1,12 +1,10 @@
 import React from 'react';
-import { createStore } from 'redux'
-import { Provider } from 'react-redux'
+import { Provider } from 'react-redux';
 import AppNavigator from './navigations/AppNavigator';
-import Container from './components/Container'
-import TaskDetail from './components/TaskDetail'
-import reducer from './reducers'
+import Container from './components/Container';
+import { configureStore } from './utils/configUtils.js';
 
-const store = createStore(reducer);
+const store = configureStore();
 
 export default class App extends React.Component {
   render() {

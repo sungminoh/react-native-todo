@@ -1,10 +1,12 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { SectionList, StyleSheet, Text, View } from 'react-native';
 import TaskItem from '../components/TaskItem';
 import Container from '../components/Container';
 import { Subheader } from 'react-native-material-ui';
+import { connect } from 'react-redux';
 
-export default class TaskListScreen extends React.Component {
+class TaskListScreen extends React.Component {
   static navigationOptions = {
     title: 'Tasks',
   };
@@ -22,46 +24,43 @@ export default class TaskListScreen extends React.Component {
   // };
 
   //onSwipe(gestureName, gestureState) {
-    //const {SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
-    //console.log(gestureName, gestureState)
-    //this.setState({gestureName: gestureName});
-    //switch (gestureName) {
-      //case SWIPE_UP:
-        //this.setState({backgroundColor: 'red'});
-        //break;
-      //case SWIPE_DOWN:
-        //this.setState({backgroundColor: 'green'});
-        //break;
-      //case SWIPE_LEFT:
-        //this.setState({backgroundColor: 'blue'});
-        //break;
-      //case SWIPE_RIGHT:
-        //this.setState({backgroundColor: 'yellow'});
-        //break;
-    //}
+  //const {SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
+  //console.log(gestureName, gestureState)
+  //this.setState({gestureName: gestureName});
+  //switch (gestureName) {
+  //case SWIPE_UP:
+  //this.setState({backgroundColor: 'red'});
+  //break;
+  //case SWIPE_DOWN:
+  //this.setState({backgroundColor: 'green'});
+  //break;
+  //case SWIPE_LEFT:
+  //this.setState({backgroundColor: 'blue'});
+  //break;
+  //case SWIPE_RIGHT:
+  //this.setState({backgroundColor: 'yellow'});
+  //break;
+  //}
   //}
 
   //onSwipeLeftCard(gestureState) {
-    //console.log(gestureState);
+  //console.log(gestureState);
   //}
 
-  render() {
-    // TODO
-    let tasks = [
-      {title: 'section1', data: [
-        {id: 1, imgUri: 'imguri', title: 'title', content: 'content', alertAt: new Date()},
-        {id: 2, title: 'title2', content: 'content2', alertAt: new Date()},
-        {id: 3, imgUri: 'imguri', title: 'title', content: 'content'},
-        {id: 4, imgUri: 'imguri', title: 'title', content: 'content'},
-      ]},
-      {title: 'section2', data: [
-        {id: 5, imgUri: 'imguri', title: 'title', content: 'content', alertAt: new Date()},
-        {id: 6, title: 'title2', content: 'content2', alertAt: new Date()},
-        {id: 7, imgUri: 'imguri', title: 'title', content: 'content'},
-        {id: 8, imgUri: 'imguri', title: 'title', content: 'content'},
-      ]}
-    ];
+  onDelete(id){
+    console.log('delete: ' + id);
+  }
+  onMarkDone(id){
+    console.log('mark done : ' + id);
+  }
 
+  render() {
+    const {
+      tasks,
+    } = this.props;
+    let sections = [
+      {title: 'section1', data: tasks}
+    ];
     return (
       <Container>
         <SectionList
@@ -72,6 +71,8 @@ export default class TaskListScreen extends React.Component {
                 title={title}
                 content={content}
                 alertAt={alertAt}
+                onDelete={this.onDelete.bind(this)}
+                onMarkDone={this.onMarkDone.bind(this)}
               />
             )
           }
@@ -80,7 +81,7 @@ export default class TaskListScreen extends React.Component {
               style={subheaderStyle}
               text={title}/>
           )}
-          sections={tasks}
+          sections={sections}
           keyExtractor={(item, index) => index}
         />
       </Container>
@@ -95,3 +96,29 @@ const subheaderStyle = StyleSheet.create({
     fontWeight: 'bold'
   }
 });
+
+TaskListScreen.propTypes = {
+  tasks: PropTypes.array.isRequired,
+  isLoading: PropTypes.bool,
+  errorMsg: PropTypes.string,
+};
+
+export default connect(
+  (state) => {
+    const {
+      tasks,
+      isLoading,
+      errorMsg,
+    } = state.taskListScreenReducer;
+    return {
+      tasks,
+      isLoading,
+      errorMsg,
+    };
+  }
+  // ,
+  // (dispatch) => ({
+  //   CounterActions: bindActionCreators(counterActions, dispatch),
+  //   PostActions: bindActionCreators(postActions, dispatch)
+  // })
+)(TaskListScreen);

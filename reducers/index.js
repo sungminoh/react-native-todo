@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux';
-import TaskItemReducer from './TaskItemReducer'
+import taskListScreenReducer from './taskListScreenReducer';
+import taskItemReducer from './taskItemReducer';
 
 export default combineReducers({
-  TaskItemReducer,
+  taskListScreenReducer,
+  taskItemReducer,
 });

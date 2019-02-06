@@ -20,16 +20,6 @@ const initialState = {
 };
 
 export default handleActions({
-  [TaskItemActionTypes.MARK_DONE]: (state, action) => {
-    console.log(state);
-    console.log(action);
-    const id = action.payload;
-    const tasks = state.tasks.filter(x => x.id != id);
-    return {
-      ...state,
-      tasks
-    };
-  },
   [TaskItemActionTypes.FAIL]: (state, action) => {
     return {
       ...state,

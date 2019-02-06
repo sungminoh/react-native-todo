@@ -3,22 +3,22 @@ import React, { Component } from 'react';
 import { PropTypes } from 'prop-types';
 
 const propTypes = {
-    children: PropTypes.node.isRequired,
+  children: PropTypes.node.isRequired,
 };
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
+  container: {
+    flex: 1,
+  },
 });
 
 class Container extends Component {
-    render() {
-        return (
-            <View style={styles.container}>
-                {this.props.children}
-            </View>
-        );
-    }
+  render() {
+    return (
+      <View style={styles.container}>
+        {this.props.children}
+      </View>
+    );
+  }
 }
 
 Container.propTypes = propTypes;

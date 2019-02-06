@@ -1,3 +1,5 @@
+import Color from 'color';
+
 const tintColor = '#2f95dc';
 
 export default {
@@ -11,4 +13,6 @@ export default {
   warningText: '#666804',
   noticeBackground: tintColor,
   noticeText: '#fff',
+  borderColor: Color('#000000').alpha(0.38).toString(),
 };
+
