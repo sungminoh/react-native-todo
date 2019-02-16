@@ -44,9 +44,11 @@ export default class MovableView extends React.Component {
       onMove,
       onRelease,
       onReleaseBack,
+      sensitivity,
     } = this.props;
     return PanResponder.create({
-      onStartShouldSetPanResponder: (ent, gestureState) => true,
+      onMoveShouldSetPanResponder: (evt, gestureState) =>
+        !(Math.abs(gestureState.dx) <= sensitivity && Math.abs(gestureState.dy) <= sensitivity),
       onPanResponderMove: (evt, gestureState) => {
         this.setPosition(gestureState);
         onMove && onMove(evt, gestureState);
@@ -82,6 +84,7 @@ MovableView.propTypes = {
   xDirection: PropTypes.string,
   y: PropTypes.bool,
   yDirection: PropTypes.string,
+  sensitivity: PropTypes.number,
   delay: PropTypes.bool,
   onMove: PropTypes.func,
   onRelease: PropTypes.func,
@@ -92,4 +95,5 @@ MovableView.propTypes = {
 MovableView.defaultProps = {
   xDirection: 'bidirection',
   yDirection: 'bidirection',
+  sensitivity: 3,
 };

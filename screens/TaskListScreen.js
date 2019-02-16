@@ -5,6 +5,8 @@ import TaskItem from '../components/TaskItem';
 import Container from '../components/Container';
 import { Subheader } from 'react-native-material-ui';
 import { connect } from 'react-redux';
+import { SubspaceProvider } from 'react-redux-subspace';
+import { namespaced } from 'redux-subspace';
 
 class TaskListScreen extends React.Component {
   static navigationOptions = {

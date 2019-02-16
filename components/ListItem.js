@@ -4,7 +4,7 @@ import {
   StyleSheet,
   View,
   Text,
-  TouchableWithoutFeedback,
+  TouchableOpacity,
   findNodeHandle,
 } from 'react-native';
 import colors from '../constants/colors';
@@ -30,6 +30,7 @@ function mergePropStyle(props, style) {
   return props;
 }
 
+
 class ListItem extends React.Component {
   constructor(props) {
     super(props);
@@ -50,11 +51,11 @@ class ListItem extends React.Component {
     }
     if (onPress) {
       return (
-        <View onPress={onPress} {...props}>
+        <TouchableOpacity onPress={onPress} {...props}>
           {content}
-        </View>
+        </TouchableOpacity>
       );
-    }else{
+    } else {
       return (
         <View {...props} >
           {content}
@@ -143,25 +144,13 @@ class ListItem extends React.Component {
         </View>
       );
     }
-    if (onPress) {
-      return (
-        <View onPress={onPress} {...props}>
-          {content}
-        </View>
-      );
-    }else{
-      return (
-        <View {...props} >
-          {content}
-        </View>
-      );
-    }
+    return this.renderElement(content, props, onPress);
   }
 
   render() {
     return (
       <View>
-        <View style={styles.container}>
+        <View style={[styles.container, this.props.styles.container]}>
           {this.renderLeftElement()}
           {this.renderCenterElement()}
           {this.renderRightElement()}
@@ -208,7 +197,6 @@ ListItem.propTypes = {
   ]),
   leftElementProps: PropTypes.object,
   onLeftElementPress: PropTypes.func,
-  onLeftElementPressValue: PropTypes.any,
 
   centerElement: PropTypes.oneOfType([
     PropTypes.element,
@@ -221,7 +209,6 @@ ListItem.propTypes = {
   ]),
   centerElementProps: PropTypes.object,
   onPress: PropTypes.func,
-  onPressValue: PropTypes.any,
 
   rightElement: PropTypes.oneOfType([
     PropTypes.element,
@@ -229,12 +216,15 @@ ListItem.propTypes = {
   ]),
   rightElementProps: PropTypes.object,
   onRightElementPress: PropTypes.func,
-  onRightElementPressValue: PropTypes.any,
+  
+  styles: PropTypes.object,
 };
+
 ListItem.defaultProps = {
   leftElementProps: {},
   centerElementProps: {},
   rightElementProps: {},
+  styles: StyleSheet.create({container: {}})
 };
 
 export default ListItem;

@@ -1,28 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Image, StyleSheet, Text, PanResponder, Dimensions, View, Animated } from 'react-native';
 import moment from 'moment';
 import { numDaysBetween } from '../utils/dateUtils';
+import { swipeLeft, markDone, deleteTask } from '../actions/taskItemActions';
 import { Avatar, Card, withTheme } from 'react-native-material-ui';
 import ListItem from './ListItem';
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 import Container from '../components/Container';
 import MovableView from '../components/MovableView';
 import Swipeout from 'react-native-swipeout';
-var swipeoutBtns = [
-  {
-    text: 'Button'
-  }
-]
 
 // const SCREEN_WIDTH = Dimensions.get('window').width;
 
-export default class TaskItem extends React.Component {
+class TaskItem extends React.Component {
   constructor(props) {
     super(props);
     // this.panResponder = this._createPanResponder();
     // this.position = new Animated.ValueXY();
-    // this.state = { right: 0 };
+    this.state = { backgroundColor: 'white' };
   }
 
   // _createPanResponder() {
@@ -57,46 +54,45 @@ export default class TaskItem extends React.Component {
     console.log(`${this.props.id} swiped`);
     const dx = Math.abs(gestureState.dx);
     const { id, } = this.props;
-    if (dx > 100) {
-      this.props.onMarkDone(id);
-    } else if(dx > 200){
+    if (dx > 200) {
+      this.props.deleteTask(id);
       this.props.onDelete(id);
+    } else if (dx > 100) {
+      this.props.markDone(id);
+      this.props.onMarkDone(id);
     }
   }
 
   onSwipeLeftMove(evt, gestureState) {
+    const { id } = this.props;
     const dx = Math.abs(gestureState.dx);
-    if (dx > 100){
-      console.log(100);
-    } else if(dx > 200){
-      console.log(200);
-    }
+    const payload = { id, dx };
+    this.props.swipeLeft(payload);
+  }
+
+  renderMarkDone() {
+
   }
 
   render() {
     const {
+      id,
       imgUri,
       title,
       content,
       alertAt,
+      backgroundColor
     } = this.props;
-
+    console.log('render ', id);
     var thumbnail = <Image style={styles.img}
       source={require('../assets/images/icon.png')} />;
     var timer = <Text style={styles.timer}>{this._formatDate(alertAt)}</Text>;
     return (
 
       <Container>
-        {/* <GestureRecognizer
-          //onSwipe={(direction, state) => this.onSwipe(direction, state)}>
-          onSwipeLeft={this.onSwipeLeft.bind(this)}> */}
         <MovableView x xDirection={'negative'}
           onReleaseBack onRelease={this.onSwipeLeftRelease.bind(this)}
           onMove={this.onSwipeLeftMove.bind(this)}>
-        {/* <Animated.View
-          {...this.panResponder.panHandlers}
-          style={{ transform: this.position.getTranslateTransform() }}> */}
-        {/* <Swipeout right={swipeoutBtns} autoClose close> */}
           <ListItem
             divider
             leftElement={thumbnail}
@@ -105,12 +101,10 @@ export default class TaskItem extends React.Component {
               secondaryText: content,
             }}
             rightElement={timer}
-            onPress={_ => console.log(`${this.props.id} clicked`)}
+            onPress={_ => console.log(`${id} clicked`)}
+            styles={{ container: { backgroundColor } }}
           />
-        {/* </Swipeout> */}
-        {/* </Animated.View> */}
         </MovableView>
-        {/* </GestureRecognizer> */}
       </Container>
     );
   }
@@ -124,7 +118,39 @@ TaskItem.propTypes = {
   alertAt: PropTypes.instanceOf(Date),
   onDelete: PropTypes.func,
   onMarkDone: PropTypes.func,
+  isLoading: PropTypes.bool,
+  errorMsg: PropTypes.string,
+  styles: PropTypes.object,
+  swipeLeft: PropTypes.func,
+  markDone: PropTypes.func,
+  deleteTask: PropTypes.func,
 };
+
+const mapStateToProps = (state, ownProps) => {
+  // console.log(state.taskItemReducer[ownProps.id])
+  const {
+    tasks,
+    isLoading,
+    errorMsg,
+    styles,
+    backgroundColor,
+  } = state.taskItemReducer;
+  return {
+    tasks,
+    isLoading,
+    errorMsg,
+    styles,
+    backgroundColor,
+  };
+};
+
+// const mapDispatchToProps = (dispatch, ownProps) => {
+//   return { swipeLeft: params => dispatch(swipeLeft(ownProps.namespace, params))};
+// };
+
+const mapDispatchToProps = { swipeLeft, markDone };
+
+export default connect(mapStateToProps, mapDispatchToProps)(TaskItem);
 
 const styles = StyleSheet.create({
   cardStyle: {

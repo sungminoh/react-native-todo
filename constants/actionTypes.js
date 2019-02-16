@@ -10,5 +10,5 @@ export const TaskListScreenActionTypes = createActionTypes(
 export const TaskItemActionTypes = createActionTypes(
   'TaskItem',
   [...commonActionTypes,
-    'MARK_DONE']
+    'MARK_DONE', 'DELETE_TASK', 'SWIPE_LEFT']
 );

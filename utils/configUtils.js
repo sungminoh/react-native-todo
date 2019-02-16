@@ -9,9 +9,9 @@ export function configureStore(initialState) {
     applyMiddleware(
       thunk,
       promise,
-      createLogger({
-        // predicate: (getState, action) => action.type == 'NO_LOG'
-      })
+      // createLogger({
+      //   // predicate: (getState, action) => action.type == 'NO_LOG'
+      // })
     ),
     window.devToolsExtension ? window.devToolsExtension() : f => f
   ));

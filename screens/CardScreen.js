@@ -1,36 +1,38 @@
-const React = require('react');
-const ReactNative = require('react-native');
-const { Button, View, FlatList, Text } = ReactNative;
-import MovableView from '../components/MovableView';
+import React from 'react'
+import { View } from 'react-native'
+import { createStore, combineReducers } from 'redux'
+import { Provider } from 'react-redux'
+import { namespaced } from 'redux-subspace'
+import { SubspaceProvider } from 'react-redux-subspace'
+import TaskItem from '../components/TaskItem'
+import taskItemReducer from '../reducers/taskItemReducer';
 
-export default class Test extends React.Component {
+const rootReducer = combineReducers({
+  task1: namespaced('t1')(taskItemReducer),
+  task2: namespaced('t2')(taskItemReducer)
+});
+
+class Test extends React.Component {
   render() {
     return (
       <View>
-        <FlatList renderItem={x => {
-          return (
-            <View>
-              <MovableView>
-                <Button title={''+x} onPress={x => console.log(x)}/>
-              </MovableView>
-            </View>
-          );
-        }}
-          data={[1, 2, 3, 4, 5]} />
-        <View style={{ flex: 1 }}>
-          <View>
-            <MovableView style={{ backgroundColor: 'gray' }}>
-              <Text>asd</Text>
-            </MovableView>
-          </View>
-          <View style={{ backgroundColor: 'red' }}>
-            <Text>123</Text>
-          </View>
-          <View style={{ backgroundColor: 'yello' }}>
-            <Text>qwe</Text>
-          </View>
-        </View>
+        <SubspaceProvider store={rootReducer} mapState={(state) => state.task1}>
+          <TaskItem key={1} id={1}
+            title={"123"}
+            content={"123"}
+            alertAt={0}
+          />
+        </SubspaceProvider>
+        <SubspaceProvider store={rootReducer} mapState={(state) => state.task2}>
+          <TaskItem key={2} id={2}
+            title={"abc"}
+            content={"abc"}
+            alertAt={0}
+          />
+        </SubspaceProvider>
       </View>
     );
   }
 }
+
+export default Test;

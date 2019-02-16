@@ -1,35 +1,37 @@
 /* eslint-disable no-unused-vars */
 import { handleActions } from 'redux-actions';
 import { TaskItemActionTypes } from '../constants/actionTypes';
-
-const initialTasks = [
-  { id: 1, imgUri: 'imguri', title: 'title', content: 'content', alertAt: new Date() },
-  { id: 2, title: 'title2', content: 'content2', alertAt: new Date() },
-  { id: 3, imgUri: 'imguri', title: 'title', content: 'content' },
-  { id: 4, imgUri: 'imguri', title: 'title', content: 'content' },
-  { id: 5, imgUri: 'imguri', title: 'title', content: 'content', alertAt: new Date() },
-  { id: 6, title: 'title2', content: 'content2', alertAt: new Date() },
-  { id: 7, imgUri: 'imguri', title: 'title', content: 'content' },
-  { id: 8, imgUri: 'imguri', title: 'title', content: 'content' },
-];
+import { white } from 'ansi-colors';
+import { examples } from '../utils/storageUtils';
+import { createStore, combineReducers } from 'redux';
+import { namespaced } from 'redux-subspace';
 
 const initialState = {
-  tasks: initialTasks,
   isLoading: false,
   errorMsg: '',
+  styles: {},
 };
 
+
+// var createReducer = _ => handleActions({
 export default handleActions({
   [TaskItemActionTypes.MARK_DONE]: (state, action) => {
-    console.log(state);
-    console.log(action);
+    console.log('reduce action ', TaskItemActionTypes.MARK_DONE.toString());
     const id = action.payload;
-    const tasks = state.tasks.filter(x => x.id != id);
     return {
       ...state,
-      tasks
     };
   },
+  [TaskItemActionTypes.SWIPE_LEFT]: (state, action) => {
+    // console.log('reduce action: ', TaskItemActionTypes.SWIPE_LEFT.toString());
+    const { id, dx } = action.payload;
+    const backgroundColor = dx > 200 ? 'red' : dx > 100 ? 'green' : state.backgroundColor;
+    return {
+      ...state,
+      backgroundColor,
+    };
+  },
+
   [TaskItemActionTypes.FAIL]: (state, action) => {
     return {
       ...state,
@@ -51,3 +53,11 @@ export default handleActions({
     };
   }
 }, initialState);
+
+
+// export default combineReducers(
+//   examples.reduce((acc, x, i) => {
+//     acc[x.id] = createReducer();
+//     return acc;
+//   }, {})
+// );
