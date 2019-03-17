@@ -4,17 +4,17 @@ import { TaskItemActionTypes } from '../constants/actionTypes';
 import { white } from 'ansi-colors';
 import { examples } from '../utils/storageUtils';
 import { createStore, combineReducers } from 'redux';
-import { namespaced } from 'redux-subspace';
 
 const initialState = {
   isLoading: false,
   errorMsg: '',
-  styles: {},
+  instanceProps: {},
 };
 
 
-// var createReducer = _ => handleActions({
+// var createReducer = key => handleActions({
 export default handleActions({
+  // var a = handleActions({
   [TaskItemActionTypes.MARK_DONE]: (state, action) => {
     console.log('reduce action ', TaskItemActionTypes.MARK_DONE.toString());
     const id = action.payload;
@@ -22,13 +22,20 @@ export default handleActions({
       ...state,
     };
   },
-  [TaskItemActionTypes.SWIPE_LEFT]: (state, action) => {
-    // console.log('reduce action: ', TaskItemActionTypes.SWIPE_LEFT.toString());
-    const { id, dx } = action.payload;
-    const backgroundColor = dx > 200 ? 'red' : dx > 100 ? 'green' : state.backgroundColor;
+  [TaskItemActionTypes.DELETE_TASK]: (state, action) => {
+    console.log('reduce action ', TaskItemActionTypes.DELETE_TASK.toString());
+    const id = action.payload;
     return {
       ...state,
-      backgroundColor,
+    };
+  },
+  [TaskItemActionTypes.SWIPE_LEFT]: (state, action) => {
+    console.log('reduce action: ', TaskItemActionTypes.SWIPE_LEFT.toString());
+    const { id, dx } = action.payload;
+    // const backgroundColor = dx > 200 ? 'red' : dx > 100 ? 'green' : state.backgroundcolor;
+    return {
+      ...state,
+      // backgroundColor
     };
   },
 

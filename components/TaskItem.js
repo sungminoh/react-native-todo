@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Image, StyleSheet, Text, PanResponder, Dimensions, View, Animated } from 'react-native';
-import moment from 'moment';
-import { numDaysBetween } from '../utils/dateUtils';
+import { StyleSheet, Text, PanResponder, Dimensions, View, Animated } from 'react-native';
+import { Image } from 'react-native-elements';
+import { numDaysBetween, formatDate } from '../utils/dateUtils';
 import { swipeLeft, markDone, deleteTask } from '../actions/taskItemActions';
 import { Avatar, Card, withTheme } from 'react-native-material-ui';
 import ListItem from './ListItem';
@@ -35,43 +35,32 @@ class TaskItem extends React.Component {
   //     onPanResponderRelease: (evt, gestureState) => { }
   //   });
   // }
-
-
-  _formatDate(date) {
-    const now = new Date();
-    const datemoment = moment(date);
-    if (date) {
-      return date.toDateString() == now.toDateString()
-        ? datemoment.format('HH:mm')
-        : Math.abs(numDaysBetween(now, date)) <= 7
-          ? datemoment.format('D, ddd')
-          : datemoment.format('D, MMM');
-    }
-    return null;
-  }
-
   onSwipeLeftRelease(evt, gestureState) {
     console.log(`${this.props.id} swiped`);
     const dx = Math.abs(gestureState.dx);
     const { id, } = this.props;
     if (dx > 200) {
-      this.props.deleteTask(id);
+      // this.props.deleteTask(id);
       this.props.onDelete(id);
     } else if (dx > 100) {
-      this.props.markDone(id);
+      // this.props.markDone(id);
       this.props.onMarkDone(id);
     }
+    // this.setState({ ...this.state, backgroundColor: 'white'});
   }
 
   onSwipeLeftMove(evt, gestureState) {
-    const { id } = this.props;
+    // const { id } = this.props;
     const dx = Math.abs(gestureState.dx);
-    const payload = { id, dx };
-    this.props.swipeLeft(payload);
+    // const payload = { id, dx };
+    // this.props.swipeLeft(payload);
+    // this.props.onSwipeLeft(id);
+    const backgroundColor = dx > 200 ? 'red' : dx > 100 ? 'green' : this.state.backgroundcolor;
+    this.setState({ ...this.state, backgroundColor });
   }
 
-  renderMarkDone() {
-
+  openDetailPage() {
+    const {id} = this.props;
   }
 
   render() {
@@ -81,14 +70,15 @@ class TaskItem extends React.Component {
       title,
       content,
       alertAt,
-      backgroundColor
+      // backgroundColor
     } = this.props;
-    console.log('render ', id);
-    var thumbnail = <Image style={styles.img}
-      source={require('../assets/images/icon.png')} />;
-    var timer = <Text style={styles.timer}>{this._formatDate(alertAt)}</Text>;
+    const {
+      backgroundColor
+    } = this.state;
+    // console.log('render ', id);
+    var thumbnail = imgUri ? <Image style={styles.img} source={{uri: imgUri}} /> : null;
+    var timer = <Text style={styles.timer}>{formatDate(alertAt)}</Text>;
     return (
-
       <Container>
         <MovableView x xDirection={'negative'}
           onReleaseBack onRelease={this.onSwipeLeftRelease.bind(this)}
@@ -101,8 +91,9 @@ class TaskItem extends React.Component {
               secondaryText: content,
             }}
             rightElement={timer}
-            onPress={_ => console.log(`${id} clicked`)}
-            styles={{ container: { backgroundColor } }}
+            // onPress={_ => console.log(`${id} clicked`)}
+            onPress={this.openDetailPage.bind(this)}
+            styles={{ container: { backgroundColor, minHeight: 60 } }}
           />
         </MovableView>
       </Container>
@@ -118,6 +109,7 @@ TaskItem.propTypes = {
   alertAt: PropTypes.instanceOf(Date),
   onDelete: PropTypes.func,
   onMarkDone: PropTypes.func,
+  // onSwipeLeft: PropTypes.func,
   isLoading: PropTypes.bool,
   errorMsg: PropTypes.string,
   styles: PropTypes.object,
@@ -127,20 +119,17 @@ TaskItem.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => {
-  // console.log(state.taskItemReducer[ownProps.id])
   const {
     tasks,
     isLoading,
     errorMsg,
-    styles,
     backgroundColor,
   } = state.taskItemReducer;
   return {
     tasks,
     isLoading,
     errorMsg,
-    styles,
-    backgroundColor,
+    backgroundColor
   };
 };
 
@@ -148,7 +137,7 @@ const mapStateToProps = (state, ownProps) => {
 //   return { swipeLeft: params => dispatch(swipeLeft(ownProps.namespace, params))};
 // };
 
-const mapDispatchToProps = { swipeLeft, markDone };
+const mapDispatchToProps = { swipeLeft, markDone, deleteTask };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskItem);
 

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { handleActions } from 'redux-actions';
-import { TaskItemActionTypes } from '../constants/actionTypes';
+import { TaskListScreenActionTypes } from '../constants/actionTypes';
 import { examples } from '../utils/storageUtils';
 
 const initialState = {
@@ -10,21 +10,37 @@ const initialState = {
 };
 
 export default handleActions({
-  [TaskItemActionTypes.FAIL]: (state, action) => {
+  [TaskListScreenActionTypes.MARK_DONE]: (state, action) => {
+    console.log('reduce action ', TaskListScreenActionTypes.MARK_DONE.toString());
+    const id = action.payload;
+    return {
+      ...state,
+      tasks: state.tasks.filter(x => x.id != id)
+    };
+  },
+  [TaskListScreenActionTypes.DELETE_TASK]: (state, action) => {
+    console.log('reduce action ', TaskListScreenActionTypes.DELETE_TASK.toString());
+    const id = action.payload;
+    return {
+      ...state,
+      tasks: state.tasks.filter(x => x.id != id)
+    };
+  },
+  [TaskListScreenActionTypes.FAIL]: (state, action) => {
     return {
       ...state,
       isLoading: false,
       errorMsg: action.payload,
     };
   },
-  [TaskItemActionTypes.SUCCESS]: (state, action) => {
+  [TaskListScreenActionTypes.SUCCESS]: (state, action) => {
     return {
       ...state,
       isLoading: false,
       errorMsg: '',
     };
   },
-  [TaskItemActionTypes.LOADING]: (state, action) => {
+  [TaskListScreenActionTypes.LOADING]: (state, action) => {
     return {
       ...state,
       isLoading: true,

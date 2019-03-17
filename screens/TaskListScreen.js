@@ -5,8 +5,7 @@ import TaskItem from '../components/TaskItem';
 import Container from '../components/Container';
 import { Subheader } from 'react-native-material-ui';
 import { connect } from 'react-redux';
-import { SubspaceProvider } from 'react-redux-subspace';
-import { namespaced } from 'redux-subspace';
+import { markDone, deleteTask } from '../actions/taskListScreenActions';
 
 class TaskListScreen extends React.Component {
   static navigationOptions = {
@@ -49,25 +48,30 @@ class TaskListScreen extends React.Component {
   //console.log(gestureState);
   //}
 
-  onDelete(id){
+  onDelete(id) {
     console.log('delete: ' + id);
+    this.props.deleteTask(id);
   }
-  onMarkDone(id){
+  onMarkDone(id) {
     console.log('mark done : ' + id);
+    this.props.markDone(id);
   }
+  // onSwipeLeft(id) {
+  //   console.log('swipe left: ' + id);
+  // }
 
   render() {
     const {
       tasks,
     } = this.props;
     let sections = [
-      {title: 'section1', data: tasks}
+      { title: 'section1', data: tasks }
     ];
     return (
       <Container>
         <SectionList
           renderItem={
-            ({item: {id, imgUri, title, content, alertAt}, index, section}) => (
+            ({ item: { id, imgUri, title, content, alertAt }, index, section }) => (
               <TaskItem key={id} id={id}
                 imgUri={imgUri}
                 title={title}
@@ -75,13 +79,14 @@ class TaskListScreen extends React.Component {
                 alertAt={alertAt}
                 onDelete={this.onDelete.bind(this)}
                 onMarkDone={this.onMarkDone.bind(this)}
+                // onSwipeLeft={this.onSwipeLeft.bind(this)}
               />
             )
           }
-          renderSectionHeader={({section: {title}}) => (
+          renderSectionHeader={({ section: { title } }) => (
             <Subheader
               style={subheaderStyle}
-              text={title}/>
+              text={title} />
           )}
           sections={sections}
           keyExtractor={(item, index) => index}
@@ -103,24 +108,29 @@ TaskListScreen.propTypes = {
   tasks: PropTypes.array.isRequired,
   isLoading: PropTypes.bool,
   errorMsg: PropTypes.string,
+  markDone: PropTypes.func,
+  deleteTask: PropTypes.func,
 };
 
-export default connect(
-  (state) => {
-    const {
-      tasks,
-      isLoading,
-      errorMsg,
-    } = state.taskListScreenReducer;
-    return {
-      tasks,
-      isLoading,
-      errorMsg,
-    };
-  }
-  // ,
-  // (dispatch) => ({
-  //   CounterActions: bindActionCreators(counterActions, dispatch),
-  //   PostActions: bindActionCreators(postActions, dispatch)
-  // })
-)(TaskListScreen);
+const mapStateToProps = (state, ownProps) => {
+  const {
+    tasks,
+    isLoading,
+    errorMsg,
+  } = state.taskListScreenReducer;
+  return {
+    tasks,
+    isLoading,
+    errorMsg,
+  };
+};
+
+// const mapDispatchToProps = (dispatch, ownProps) => {
+//   return {
+//     markDone: params => dispatch(markDone(params)),
+//     deleteTask: params => dispatch(deleteTask(params)),
+//   };
+// };
+const mapDispatchToProps = { markDone, deleteTask };
+
+export default connect(mapStateToProps, mapDispatchToProps)(TaskListScreen);

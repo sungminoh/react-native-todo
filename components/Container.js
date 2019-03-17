@@ -2,25 +2,31 @@ import { View, StyleSheet } from 'react-native';
 import React, { Component } from 'react';
 import { PropTypes } from 'prop-types';
 
-const propTypes = {
-  children: PropTypes.node.isRequired,
-};
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
-class Container extends Component {
+export default class Container extends Component {
   render() {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, this.props.style]}>
         {this.props.children}
       </View>
     );
   }
 }
 
-Container.propTypes = propTypes;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
 
-export default Container;
+Container.propTypes = {
+  children: PropTypes.node.isRequired,
+  style: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.arrayOf(PropTypes.object)
+  ]),
+};
+
+Container.defaultProps = {
+  style: StyleSheet.create({})
+};

@@ -4,7 +4,7 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 
 import TabBarIcon from '../components/TabBarIcon';
 import TaskListScreen from '../screens/TaskListScreen';
-import CardScreen from '../screens/CardScreen';
+import TaskDetailScreen from '../screens/TaskDetailScreen';
 
 const HomeStack = createStackNavigator({
   Home: TaskListScreen,
@@ -12,7 +12,7 @@ const HomeStack = createStackNavigator({
 
 HomeStack.navigationOptions = {
   tabBarLabel: 'Home',
-  title: 'title',
+  title: 'home title',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -25,13 +25,13 @@ HomeStack.navigationOptions = {
   ),
 };
 
-const TestStack = createStackNavigator({
-  Test: CardScreen,
+const TaskDetailStack = createStackNavigator({
+  TaskDetail: TaskDetailScreen,
 });
 
-TestStack.navigationOptions = {
-  tabBarLabel: 'Test',
-  title: 'title',
+TaskDetailStack.navigationOptions = {
+  tabBarLabel: 'Task',
+  title: 'task title',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -46,6 +46,6 @@ TestStack.navigationOptions = {
 
 
 export default createBottomTabNavigator({
+  TaskDetailStack,
   HomeStack,
-  TestStack
 });

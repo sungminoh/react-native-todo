@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Divider } from 'react-native-elements';
 import {
   StyleSheet,
   View,
@@ -155,7 +156,7 @@ class ListItem extends React.Component {
           {this.renderCenterElement()}
           {this.renderRightElement()}
         </View>
-        {this.props.divider ? <View style={styles.divider} /> : null}
+        {this.props.divider ? <Divider style={styles.divider} /> : null}
       </View>
     );
   }
@@ -171,9 +172,9 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    padding: 8,
   },
   leftElement: {
-    margin: 8,
     width: 56,
   },
   centerElement: {
@@ -181,7 +182,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   rightElement: {
-    marginRight: 20,
+    marginRight: 12,
     flexDirection: 'row',
     backgroundColor: 'transparent',
   }
