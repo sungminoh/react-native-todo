@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { StyleSheet, Text, PanResponder, Dimensions, View, Animated } from 'react-native';
+import { StyleSheet, Text, TouchableHighlight, PanResponder, Dimensions, View, Animated } from 'react-native';
 import { Image } from 'react-native-elements';
 import { numDaysBetween, formatDate } from '../utils/dateUtils';
 import { swipeLeft, markDone, deleteTask } from '../actions/taskItemActions';
@@ -11,51 +11,32 @@ import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures'
 import Container from '../components/Container';
 import MovableView from '../components/MovableView';
 import Swipeout from 'react-native-swipeout';
+import Swipeable from 'react-native-swipeable';
 
 // const SCREEN_WIDTH = Dimensions.get('window').width;
+const doneThreshold= 100;
+const deleteThreshold = 200;
 
 class TaskItem extends React.Component {
   constructor(props) {
     super(props);
-    // this.panResponder = this._createPanResponder();
-    // this.position = new Animated.ValueXY();
     this.state = { backgroundColor: 'white' };
   }
 
-  // _createPanResponder() {
-  //   return PanResponder.create({
-  //     onStartShouldSetPanResponder: (ent, gestureState) => true,
-  //     onPanResponderMove: (evt, gestureState) => {
-  //       this.position.setValue({
-  //         x: gestureState.dx,
-  //         y: 0,
-  //         // y: gestureState.dy
-  //       });
-  //     },
-  //     onPanResponderRelease: (evt, gestureState) => { }
-  //   });
-  // }
-  onSwipeLeftRelease(evt, gestureState) {
+  onSwipeLeftRelease(x, y) {
     console.log(`${this.props.id} swiped`);
-    const dx = Math.abs(gestureState.dx);
+    const dx = Math.abs(x);
     const { id, } = this.props;
-    if (dx > 200) {
-      // this.props.deleteTask(id);
+    if (dx > deleteThreshold) {
       this.props.onDelete(id);
-    } else if (dx > 100) {
-      // this.props.markDone(id);
+    } else if (dx > doneThreshold) {
       this.props.onMarkDone(id);
     }
-    // this.setState({ ...this.state, backgroundColor: 'white'});
   }
 
-  onSwipeLeftMove(evt, gestureState) {
-    // const { id } = this.props;
-    const dx = Math.abs(gestureState.dx);
-    // const payload = { id, dx };
-    // this.props.swipeLeft(payload);
-    // this.props.onSwipeLeft(id);
-    const backgroundColor = dx > 200 ? 'red' : dx > 100 ? 'green' : this.state.backgroundcolor;
+  onSwipeLeftMove(x, y) {
+    const dx = Math.abs(x);
+    const backgroundColor = dx > deleteThreshold ? 'red' : dx > doneThreshold ? 'green' : this.state.backgroundcolor;
     this.setState({ ...this.state, backgroundColor });
   }
 
@@ -78,8 +59,16 @@ class TaskItem extends React.Component {
     // console.log('render ', id);
     var thumbnail = imgUri ? <Image style={styles.img} source={{uri: imgUri}} /> : null;
     var timer = <Text style={styles.timer}>{formatDate(alertAt)}</Text>;
+    // const leftContent = <TouchableHighlight style={{backgroundColor: 'green'}}><Text>Archive</Text></TouchableHighlight>;
+
+    // const rightButtons = [
+    //   <TouchableHighlight><Text>Button 1</Text></TouchableHighlight>,
+    //   <TouchableHighlight><Text>Button 2</Text></TouchableHighlight>
+    // ];
+
     return (
       <Container>
+        {/* <Swipeable leftContent={leftContent} rightButtons={rightButtons}> */}
         <MovableView x xDirection={'negative'}
           onReleaseBack onRelease={this.onSwipeLeftRelease.bind(this)}
           onMove={this.onSwipeLeftMove.bind(this)}>
@@ -96,6 +85,7 @@ class TaskItem extends React.Component {
             styles={{ container: { backgroundColor, minHeight: 60 } }}
           />
         </MovableView>
+        {/* </Swipeable> */}
       </Container>
     );
   }

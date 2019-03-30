@@ -14,7 +14,7 @@ export default class MovableView extends React.Component {
     this.panResponder = this.createPanResponder();
   }
 
-  setPosition(gestureState) {
+  getXy(gestureState){
     let {
       x, xDirection,
       y, yDirection,
@@ -36,9 +36,8 @@ export default class MovableView extends React.Component {
     let coordinate = {};
     coordinate.x = x ? dx : 0;
     coordinate.y = y ? dy : 0;
-    this.position.setValue(coordinate);
+    return coordinate;
   }
-
   createPanResponder() {
     const {
       onMove,
@@ -50,15 +49,27 @@ export default class MovableView extends React.Component {
       onMoveShouldSetPanResponder: (evt, gestureState) =>
         !(Math.abs(gestureState.dx) <= sensitivity && Math.abs(gestureState.dy) <= sensitivity),
       onPanResponderMove: (evt, gestureState) => {
-        this.setPosition(gestureState);
-        onMove && onMove(evt, gestureState);
+        const { x, y } = this.getXy(gestureState);
+        this.position.setValue({ x, y })
+        onMove && onMove(x, y);
       },
       onPanResponderRelease: (evt, gestureState) => {
+        const x = this.position.x._value;
+        const y = this.position.y._value;
         onReleaseBack && Animated.spring(this.position, {
           toValue: { x: 0, y: 0 },
           friction: 4,
         }).start();
-        onRelease && onRelease(evt, gestureState);
+        if(onRelease){
+          if(onReleaseBack){
+            onReleaseBack && Animated.timing(this.position, {
+              toValue: { x: 0, y: 0 },
+              friction: 4,
+            }).start(_ => onRelease(x, y));
+          } else {
+            onRelease(x, y);
+          }
+        }
       }
     });
   }
